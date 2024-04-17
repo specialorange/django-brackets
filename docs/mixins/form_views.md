@@ -49,8 +49,8 @@ class UserAndAccountView(MultipleFormMixin, FormView):
     form_classes = {"user": UserForm, "account": AccountForm}
     form_initial_values = {"account_id": 0}
 
-    def get_form_instances(self):
-        instances = super().get_form_instances()
+    def get_instance(self):
+        instances = super().get_instance()
         intances.update({"user": self.request.user})
         return instances
 ```
