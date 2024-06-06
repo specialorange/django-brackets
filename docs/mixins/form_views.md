@@ -43,7 +43,7 @@ allow you to configure your view. All are dictionaries where the key is
 used to refer to the form.
 
 ```py
-from brackets.mixins import MultipleFormMixin
+from brackets.mixins import MultipleFormsMixin
 
 class UserAndAccountView(MultipleFormMixin, FormView):
     form_classes = {"user": UserForm, "account": AccountForm}
