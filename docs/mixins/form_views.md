@@ -40,27 +40,42 @@ even remove that complexity completely.
 
 Three attributes have been added, with corresponding methods, that will
 allow you to configure your view. All are dictionaries where the key is
-used to refer to the form.
+used to refer to the form.  `forms_valid()` and `forms_invalid()` will need to be implemented, 
+as there is no convention for multiple forms on a single page.
 
 ```py
 from brackets.mixins import MultipleFormMixin
 
-class UserAndAccountView(MultipleFormMixin, FormView):
-    form_classes = {"user": UserForm, "account": AccountForm}
+class UserAndAccountView(MultipleFormMixin, UpdateView):
+    form_classes = {
+        "user": UserForm,
+        "account": AccountForm,
+        # …
+    }
     form_initial_values = {"account_id": 0}
 
     def get_instance(self):
         instances = super().get_instance()
         intances.update({"user": self.request.user})
         return instances
+
+    # Since you have multiple forms now, it is unclear what should
+    # occur when all forms pass or at least one fails.
+    # You will need to implement these
+    def forms_valid(self):
+        pass
+    def forms_invalid(self):
+        pass
 ```
 
 - `form_classes` values are the form _classes_ themselves. Use
   `get_form_classes` to provide form classes programmatically.
 - `form_initial_values` values are dictionaries of initial data for the
-  forms. You can also provide this dictionary via `get_initial`
+  forms. You want to name the key in the form of `<form_class>_<field_name>`.
+  You can also provide this dictionary via `get_initial`
 - `form_instances` values are model instances to be provided to model
   forms. Since this is usually more complicated, expect to override the
-  behavior in `get_instance`.
+  behavior in `get_instance`. `get_instance` will not be called on a FormView,
+  just on Views that work on ModelForms.
 
 [forms.UserFormMixin]: forms.md#UserFormMixin
